@@ -1,0 +1,1 @@
+﻿Maritime OSINT app bootstrap
