@@ -1,0 +1,18 @@
+﻿:root { --bg:#0b1f3a; --panel:#122b52; --text:#e9f1ff; --ok:#7CFC98; --warn:#ffd166; --bad:#ff6b6b; }
+*{box-sizing:border-box}
+body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+header,footer{padding:14px 18px}
+.layout{display:grid;grid-template-columns:1fr 2fr 1fr;gap:12px;padding:0 12px 12px}
+.panel{background:var(--panel);border-radius:10px;padding:12px;min-height:240px}
+h1,h2{margin:6px 0 10px}
+#search{width:100%;padding:10px;border-radius:8px;border:none;margin-bottom:8px}
+#vesselList,#alerts,#newsList{list-style:none;padding-left:0;margin:0;max-height:420px;overflow:auto}
+#vesselList li,#alerts li,#newsList li{padding:8px;border-bottom:1px solid rgba(255,255,255,.12)}
+#vesselList li{cursor:pointer}
+#vesselList li:hover{background:rgba(255,255,255,.08)}
+#newsList a{color:#9fd3ff;text-decoration:none}
+#newsList a:hover{text-decoration:underline}
+#map{height:460px;border-radius:8px;overflow:hidden}
+.badge{padding:2px 8px;border-radius:999px;font-size:12px}
+.low{background:#2a8f4a}.medium{background:#9e7a1f}.high{background:#9b2f2f}
+@media (max-width: 980px){ .layout{grid-template-columns:1fr} #map{height:340px} }
