@@ -1,4 +1,4 @@
-﻿const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = "https://maritime-osint-api.onrender.com";
 
 const map = L.map('map').setView([20, 30], 2);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -28,7 +28,7 @@ function renderAlerts(){
 
 async function searchVessels(q){
   if (!q || q.length < 2){
-    vesselList.innerHTML = "<li>Type at least 2 characters…</li>";
+    vesselList.innerHTML = "<li>Type at least 2 characters�</li>";
     return;
   }
   try {
