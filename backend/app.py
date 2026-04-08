@@ -1,8 +1,8 @@
-﻿from services.alert_service import get_latest_alerts
-from fastapi import FastAPI, Query
+﻿from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from services.vessel_service import unified_vessel_search
 from services.news_service import get_latest_news
+from services.alert_service import get_latest_alerts
 
 app = FastAPI(title="Maritime OSINT API", version="0.1.0")
 
