@@ -18,17 +18,23 @@ const newsList = document.getElementById("newsList");
 
 function badge(sev) { return `<span class="badge ${sev}">${sev.toUpperCase()}</span>`; }
 
-function renderAlerts() {
-  const demo = [
-    { severity: "high", text: "AIS gap > 8h near chokepoint." },
-    { severity: "medium", text: "Route deviation from baseline corridor." },
-    { severity: "low", text: "Loitering pattern outside anchorage." }
-  ];
-  alertsList.innerHTML = "";
-  for (const a of demo) {
-    const li = document.createElement("li");
-    li.innerHTML = `${badge(a.severity)} <small>${a.text}</small>`;
-    alertsList.appendChild(li);
+function async function loadAlerts() {
+  try {
+    const r = await fetch(`${API_BASE}/api/alerts/latest`);
+    const j = await r.json();
+    alertsList.innerHTML = "";
+
+    (j.items || []).forEach((a) => {
+      const li = document.createElement("li");
+      li.innerHTML = `${badge(a.severity)} <strong>${a.title}</strong><br><small>${a.text}</small><br><small>${a.ts}</small>`;
+      alertsList.appendChild(li);
+    });
+
+    if (!(j.items || []).length) {
+      alertsList.innerHTML = "<li>No alerts.</li>";
+    }
+  } catch (e) {
+    alertsList.innerHTML = `<li>Alerts API error: ${e.message}</li>`;
   }
 }
 
@@ -100,6 +106,7 @@ async function loadNews() {
 }
 
 search.addEventListener("input", (e) => searchVessels(e.target.value.trim()));
-renderAlerts();
+loadAlerts();
 loadNews();
 setInterval(loadNews, 60000);
+setInterval(loadAlerts, 60000);
