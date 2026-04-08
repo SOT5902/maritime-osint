@@ -55,7 +55,13 @@ function renderVessels(results) {
 
     if (map && typeof d.lat === "number" && typeof d.lon === "number") {
       const key = d.mmsi || d.imo || d.name;
-      const m = L.marker([d.lat, d.lon]).addTo(map).bindPopup(`${d.name || "Unknown"}<br>IMO ${d.imo || "-"}`);
+      const m = L.circleMarker([d.lat, d.lon], {
+  radius: 8,
+  color: "#7CFC98",
+  weight: 2,
+  fillColor: "#7CFC98",
+  fillOpacity: 0.9
+}).addTo(map).bindPopup(`${d.name || "Unknown"}<br>IMO ${d.imo || "-"}`);
       markers.set(key, m);
 
       li.onclick = () => map.setView([d.lat, d.lon], 6);
