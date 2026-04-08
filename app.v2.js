@@ -16,26 +16,8 @@ const alertsList = document.getElementById("alerts");
 const search = document.getElementById("search");
 const newsList = document.getElementById("newsList");
 
-function badge(sev) { return `<span class="badge ${sev}">${sev.toUpperCase()}</span>`; }
-
-function async function loadAlerts() {
-  try {
-    const r = await fetch(`${API_BASE}/api/alerts/latest`);
-    const j = await r.json();
-    alertsList.innerHTML = "";
-
-    (j.items || []).forEach((a) => {
-      const li = document.createElement("li");
-      li.innerHTML = `${badge(a.severity)} <strong>${a.title}</strong><br><small>${a.text}</small><br><small>${a.ts}</small>`;
-      alertsList.appendChild(li);
-    });
-
-    if (!(j.items || []).length) {
-      alertsList.innerHTML = "<li>No alerts.</li>";
-    }
-  } catch (e) {
-    alertsList.innerHTML = `<li>Alerts API error: ${e.message}</li>`;
-  }
+function badge(sev) {
+  return `<span class="badge ${sev}">${(sev || "low").toUpperCase()}</span>`;
 }
 
 function clearMarkers() {
@@ -60,16 +42,11 @@ function renderVessels(results) {
     vesselList.appendChild(li);
 
     if (map && typeof d.lat === "number" && typeof d.lon === "number") {
-      const key = d.mmsi || d.imo || d.name;
+      const key = d.mmsi || d.imo || d.name || `${d.lat},${d.lon}`;
       const m = L.circleMarker([d.lat, d.lon], {
-  radius: 8,
-  color: "#7CFC98",
-  weight: 2,
-  fillColor: "#7CFC98",
-  fillOpacity: 0.9
-}).addTo(map).bindPopup(`${d.name || "Unknown"}<br>IMO ${d.imo || "-"}`);
+        radius: 8, color: "#7CFC98", weight: 2, fillColor: "#7CFC98", fillOpacity: 0.9
+      }).addTo(map).bindPopup(`${d.name || "Unknown"}<br>IMO ${d.imo || "-"}`);
       markers.set(key, m);
-
       li.onclick = () => map.setView([d.lat, d.lon], 6);
     }
   }
@@ -97,16 +74,34 @@ async function loadNews() {
     newsList.innerHTML = "";
     for (const n of (j.items || [])) {
       const li = document.createElement("li");
-      li.innerHTML = `<a href="${n.link}" target="_blank" rel="noreferrer">${n.title}</a><br><small>${n.published}</small>`;
+      li.innerHTML = `<a href="${n.link}" target="_blank" rel="noreferrer">${n.title}</a><br><small>${n.published || ""}</small>`;
       newsList.appendChild(li);
     }
+    if (!(j.items || []).length) newsList.innerHTML = "<li>No news items.</li>";
   } catch (e) {
     newsList.innerHTML = `<li>News API error: ${e.message}</li>`;
   }
 }
 
+async function loadAlerts() {
+  try {
+    const r = await fetch(`${API_BASE}/api/alerts/latest`);
+    const j = await r.json();
+    alertsList.innerHTML = "";
+    for (const a of (j.items || [])) {
+      const li = document.createElement("li");
+      li.innerHTML = `${badge(a.severity)} <strong>${a.title || ""}</strong><br><small>${a.text || ""}</small>`;
+      alertsList.appendChild(li);
+    }
+    if (!(j.items || []).length) alertsList.innerHTML = "<li>No alerts.</li>";
+  } catch (e) {
+    alertsList.innerHTML = `<li>Alerts API error: ${e.message}</li>`;
+  }
+}
+
 search.addEventListener("input", (e) => searchVessels(e.target.value.trim()));
+
 loadAlerts();
 loadNews();
-setInterval(loadNews, 60000);
 setInterval(loadAlerts, 60000);
+setInterval(loadNews, 60000);
